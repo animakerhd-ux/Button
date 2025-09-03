@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ecommerce-Style Image Gallery</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="product grid" aria-label="Image gallery demo">
+
+      <!-- Left: Gallery -->
+      <div>
+        <div class="viewer" id="viewer" aria-live="polite">
+          <button id="prevBtn" class="nav-arrow left" aria-label="Previous image">‹</button>
+          <img id="mainImage" src="img/img1.jpg" alt="Headphones – front angle" />
+          <button id="nextBtn" class="nav-arrow right" aria-label="Next image">›</button>
+        </div>
+
+        <div class="thumbs" id="thumbStrip" role="listbox" aria-label="Thumbnails">
+          <button class="thumb active" role="option" aria-selected="true" 
+            title="Front angle" 
+            data-large="img/img1.jpg" 
+            data-alt="Headphones – front angle">
+            <img src="img/img1.jpg" alt="Front angle thumbnail" />
+          </button>
+
+          <button class="thumb" role="option" title="Side angle" 
+            data-large="img/img2.jpg" 
+            data-alt="Headphones – side angle">
+            <img src="img/img2.jpg" alt="Side angle thumbnail" />
+          </button>
+
+          <button class="thumb" role="option" title="Folded view" 
+            data-large="img/img3.jpg" 
+            data-alt="Headphones – folded">
+            <img src="img/img3.jpg" alt="Folded thumbnail" />
+          </button>
+
+          <button class="thumb" role="option" title="Top view" 
+            data-large="img/img4.jpg" 
+            data-alt="Headphones – top view">
+            <img src="img/img4.jpg" alt="Top view thumbnail" />
+          </button>
+
+          <button class="thumb" role="option" title="Lifestyle" 
+            data-large="img/img5.jpg" 
+            data-alt="Headphones – lifestyle on desk">
+            <img src="img/img5.jpg" alt="Lifestyle thumbnail" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Product Info -->
+      <aside class="info">
+        <h1>MacBook Air M4</h1>
+        <div class="muted">13-inch</div>
+        <div class="price">₱64,990</div>
+        <p class="muted">
+          MacBook Air with the M4 chip lets you blaze through everything you’re into while delivering up to 18 hours of battery life. And you have four gorgeous colors to choose from, including a stunning Sky Blue. With the perfectly portable MacBook Air, you’ll be ready to take on just about anything, anywhere.
+        </p>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn" type="button">Add to Cart</button>
+          <button class="btn" type="button">Buy Now</button>
+        </div>
+      </aside>
+
+    </section>
+  </main>
+
+  <!-- JS for Gallery Logic -->
+  <script>
+    $(document).ready(function () {
+      const $thumbs = $(".thumb");
+      let currentIndex = 0;
+
+      function updateViewer(index) {
+        const $selectedThumb = $thumbs.eq(index);
+        const newSrc = $selectedThumb.data("large");
+        const newAlt = $selectedThumb.data("alt");
+
+        const $mainImage = $("#mainImage");
+        $mainImage.addClass("fade-out");
+
+        setTimeout(() => {
+          $mainImage.attr("src", newSrc).attr("alt", newAlt).removeClass("fade-out");
+        }, 150);
+
+        $thumbs.removeClass("active").attr("aria-selected", "false");
+        $selectedThumb.addClass("active").attr("aria-selected", "true");
+
+        currentIndex = index;
+        $("#prevBtn").prop("disabled", currentIndex === 0);
+        $("#nextBtn").prop("disabled", currentIndex === $thumbs.length - 1);
+      }
+
+      // Initialize
+      updateViewer(0);
+
+      $thumbs.on("click", function () {
+        const index = $thumbs.index(this);
+        updateViewer(index);
+      });
+
+      $("#prevBtn").on("click", function () {
+        if (currentIndex > 0) updateViewer(currentIndex - 1);
+      });
+
+      $("#nextBtn").on("click", function () {
+        if (currentIndex < $thumbs.length - 1) updateViewer(currentIndex + 1);
+      });
+    });
+  </script>
+</body>
+</html>
